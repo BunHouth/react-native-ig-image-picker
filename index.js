@@ -19,8 +19,8 @@ const defaultOption = {
   showsVideoTrimmer: true,
   showsPhotoFilters: true,
   usesFrontCamera: false,
-  cropWidth: 1024,
-  cropHeight: 1024
+  cropWidth: null,
+  cropHeight: null
 };
 
 export const showImagePicker = (options = {}) => {

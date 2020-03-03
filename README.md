@@ -10,8 +10,9 @@
 
 ## Usage
 ```javascript
-import IgImagePicker from 'react-native-ig-image-picker';
+import {showImagePicker} from 'react-native-ig-image-picker';
 
-// TODO: What to do with the module?
-IgImagePicker
+const openPicker = async () => {
+ const response = await showImagePicker({})
+}
 ```

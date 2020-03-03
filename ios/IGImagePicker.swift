@@ -71,70 +71,76 @@ class IGImagePicker: UIViewController {
         picker.dismiss(animated: true, completion: nil)
         resolve(selections)
       }
-      let root = RCTPresentedViewController()
-      root?.present(picker, animated: true)
+        let root = RCTPresentedViewController()
+        root?.present(picker, animated: true)
     })
   }
 
-  @objc func libraryPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+  @objc func libaryPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
     DispatchQueue.main.async(execute: {
-      var config = YPImagePickerConfiguration()
-      var startOnScreen = YPPickerScreen.library
-
-      if(options.value(forKeyPath: "startOnScreen") as? String ?? "library" == "photo") {
-        startOnScreen = YPPickerScreen.photo
-      }
-
-      config.library.onlySquare = false
-      config.library.isSquareByDefault = true
-      config.library.minWidthForItem = nil
-      config.library.mediaType = YPlibraryMediaType.photo
-      config.library.defaultMultipleSelection =  options.value(forKeyPath: "library.defaultMultipleSelection") as? Bool ?? false
-      config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 1
-      config.library.minNumberOfItems = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 1
-      config.library.numberOfItemsInRow = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 4
-      config.library.spacingBetweenItems = 1.0
-      config.library.skipSelectionsGallery = false
-      config.library.preselectedItems = nil
-      config.showsPhotoFilters = options.value(forKeyPath: "showsPhotoFilters") as? Bool ?? true
-      config.usesFrontCamera = options.value(forKeyPath: "usesFrontCamera") as? Bool ?? false
-      config.startOnScreen = startOnScreen
-      config.screens = [.library, .photo]
-      config.library.mediaType = .photo
-      config.maxCameraZoomFactor = 2.0
-      config.gallery.hidesRemoveButton = false
-      config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 5
-
-      let picker = YPImagePicker(configuration: config)
-      picker.didFinishPicking { [unowned picker] items, cancelled in
-          if cancelled {
-            picker.dismiss(animated: true, completion: nil)
-            reject("", "Picker was canceled", nil)
-            return
-          }
-
-          var selections = [[String:Any]]()
-        for item in items {
-          switch item {
-            case .photo(let photo):
-              let imageResult = self.compression.compressImage(photo.image, withOptions: options as? [AnyHashable : Any])
-              let filePath = self.persistFile(imageResult?.data)!
-              let url = URL(fileURLWithPath: filePath)
-              let fileName = url.lastPathComponent
-              let photoDict = ["filename": fileName, "path": url.absoluteString, "mime": imageResult?.mime as Any, "height": imageResult?.height as Any, "width": imageResult?.width as Any, "size": imageResult?.data.count as Any] as [String : Any]
-              selections.append(photoDict)
-
-            case .video( _):
-              print("Photo..")
-              break
-          }
+        var config = YPImagePickerConfiguration()
+        var startOnScreen = YPPickerScreen.library
+        let cropWidth = options.value(forKeyPath: "cropWidth") as? Int ?? 0
+        let cropHeight = options.value(forKeyPath: "cropHeight") as? Int ?? 0
+        if(cropWidth != 0 && cropHeight != 0) {
+            let ratio = cropWidth/cropHeight
+            config.showsCrop = .rectangle(ratio: Double(ratio))
         }
 
-        picker.dismiss(animated: true, completion: nil)
-        resolve(selections)
-      }
-      let root = RCTPresentedViewController()
-      root?.present(picker, animated: true)
+        if(options.value(forKeyPath: "startOnScreen") as? String ?? "library" == "photo") {
+            startOnScreen = YPPickerScreen.photo
+        }
+
+        config.library.onlySquare = false
+        config.library.isSquareByDefault = true
+        config.library.minWidthForItem = nil
+        config.library.mediaType = YPlibraryMediaType.photo
+        config.library.defaultMultipleSelection =  options.value(forKeyPath: "library.defaultMultipleSelection") as? Bool ?? false
+        config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 1
+        config.library.minNumberOfItems = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 1
+        config.library.numberOfItemsInRow = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 4
+        config.library.spacingBetweenItems = 1.0
+        config.library.skipSelectionsGallery = false
+        config.library.preselectedItems = nil
+        config.showsPhotoFilters = options.value(forKeyPath: "showsPhotoFilters") as? Bool ?? true
+        config.usesFrontCamera = options.value(forKeyPath: "usesFrontCamera") as? Bool ?? false
+        config.startOnScreen = startOnScreen
+        config.screens = [.library, .photo]
+        config.library.mediaType = .photo
+        config.maxCameraZoomFactor = 2.0
+        config.gallery.hidesRemoveButton = false
+        config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 5
+
+        let picker = YPImagePicker(configuration: config)
+        picker.didFinishPicking { [unowned picker] items, cancelled in
+            if cancelled {
+                picker.dismiss(animated: true, completion: nil)
+                reject("", "Picker was canceled", nil)
+                return
+            }
+
+            var selections = [[String:Any]]()
+            for item in items {
+                switch item {
+                    case .photo(let photo):
+                        let imageResult = self.compression.compressImage(photo.image, withOptions: options as? [AnyHashable : Any])
+                        let filePath = self.persistFile(imageResult?.data)!
+                        let url = URL(fileURLWithPath: filePath)
+                        let fileName = url.lastPathComponent
+                        let photoDict = ["filename": fileName, "path": url.absoluteString, "mime": imageResult?.mime as Any, "height": imageResult?.height as Any, "width": imageResult?.width as Any, "size": imageResult?.data.count as Any] as [String : Any]
+                        selections.append(photoDict)
+
+                case .video( _):
+                    print("Photo..")
+                    break
+                }
+            }
+
+            picker.dismiss(animated: true, completion: nil)
+            resolve(selections)
+        }
+        let root = RCTPresentedViewController()
+        root?.present(picker, animated: true)
     })
   }
 
@@ -142,7 +148,12 @@ class IGImagePicker: UIViewController {
 
     DispatchQueue.main.async(execute: {
         var config = YPImagePickerConfiguration()
-
+            let cropWidth = options.value(forKeyPath: "cropWidth") as? Int ?? 0
+            let cropHeight = options.value(forKeyPath: "cropHeight") as? Int ?? 0
+            if(cropWidth != 0 && cropHeight != 0) {
+                let ratio = cropWidth/cropHeight
+                config.showsCrop = .rectangle(ratio: Double(ratio))
+            }
             config.library.mediaType = .photoAndVideo
             config.shouldSaveNewPicturesToAlbum = false
             config.video.compression = AVAssetExportPresetMediumQuality

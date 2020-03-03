@@ -21,15 +21,15 @@ const defaultOption = {
   usesFrontCamera: false
 };
 
-export const showImagePicker = options => {
+export const showImagePicker = (options = {}) => {
   return IGImagePicker.showImagePicker({...defaultOption, ...options});
 };
 
-export const libaryPicker = options => {
+export const libaryPicker = (options = {}) => {
   return IGImagePicker.libaryPicker({...defaultOption, ...options});
 };
 
-export const videoPicker = options => {
+export const videoPicker = (options = {}) => {
   return IGImagePicker.videoPicker({...defaultOption, ...options});
 };
 

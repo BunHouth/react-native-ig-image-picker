@@ -25,8 +25,8 @@ export const showImagePicker = (options = {}) => {
   return IGImagePicker.showImagePicker({...defaultOption, ...options});
 };
 
-export const libaryPicker = (options = {}) => {
-  return IGImagePicker.libaryPicker({...defaultOption, ...options});
+export const libraryPicker = (options = {}) => {
+  return IGImagePicker.libraryPicker({...defaultOption, ...options});
 };
 
 export const videoPicker = (options = {}) => {
@@ -35,6 +35,6 @@ export const videoPicker = (options = {}) => {
 
 export default {
   showImagePicker,
-  libaryPicker,
+  libraryPicker,
   videoPicker
 };

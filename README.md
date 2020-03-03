@@ -10,9 +10,32 @@
 
 ## Usage
 ```javascript
-import {showImagePicker} from 'react-native-ig-image-picker';
+import {showImagePicker, libraryPicker, videoPicker} from 'react-native-ig-image-picker';
 
 const openPicker = async () => {
  const response = await showImagePicker({})
 }
+```
+
+#### Picker options
+```javascript
+const defaultOption = {
+  compressImageMaxWidth: 780,
+  compressImageMaxHeight: 780,
+  library: {
+    maxNumberOfItems: 10,
+    defaultMultipleSelection: false,
+    minNumberOfItems: 1
+  },
+  video: {
+    recordingTimeLimit: 60.0,
+    libraryTimeLimit: 60,
+    minimumTimeLimit: 3,
+    trimmerMaxDuration: 60,
+    trimmerMinDuration: 3
+  },
+  showsVideoTrimmer: true,
+  showsPhotoFilters: true,
+  usesFrontCamera: false
+};
 ```

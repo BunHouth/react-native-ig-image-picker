@@ -16,20 +16,20 @@ class IGImagePicker: UIViewController {
   private var imageCropDimension: [AnyHashable : Any]?
   let compression = IGCompression()
 
-  
+
   @objc class func requiresMainQueueSetup() -> Bool {
     return true
   }
-  
+
   @objc func videoPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
     DispatchQueue.main.async(execute: {
       var config = YPImagePickerConfiguration()
       var startOnScreen = YPPickerScreen.video
-      
+
       if(options.value(forKeyPath: "startOnScreen") as? String ?? "video" == "library") {
         startOnScreen = YPPickerScreen.video
       }
-      
+
       config.video.compression = AVAssetExportPresetHighestQuality
       config.video.fileType = .mp4
       config.library.mediaType = YPlibraryMediaType.video
@@ -45,16 +45,16 @@ class IGImagePicker: UIViewController {
       config.library.defaultMultipleSelection =  options.value(forKeyPath: "library.defaultMultipleSelection") as? Bool ?? false
       config.screens = [.library, .video]
       config.startOnScreen = startOnScreen
-      
+
       let picker = YPImagePicker(configuration: config)
-      
+
       picker.didFinishPicking { [unowned picker] items, cancelled in
           if cancelled {
             picker.dismiss(animated: true, completion: nil)
             reject("", "Picker was canceled", nil)
             return
           }
-        
+
           var selections = [[String:Any]]()
         for item in items {
           switch item {
@@ -67,22 +67,24 @@ class IGImagePicker: UIViewController {
               break
           }
         }
-          
+
         picker.dismiss(animated: true, completion: nil)
         resolve(selections)
       }
+      let root = RCTPresentedViewController()
+      root?.present(picker, animated: true)
     })
   }
-  
-  @objc func libaryPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+  @objc func libraryPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
     DispatchQueue.main.async(execute: {
       var config = YPImagePickerConfiguration()
       var startOnScreen = YPPickerScreen.library
-           
+
       if(options.value(forKeyPath: "startOnScreen") as? String ?? "library" == "photo") {
         startOnScreen = YPPickerScreen.photo
       }
-      
+
       config.library.onlySquare = false
       config.library.isSquareByDefault = true
       config.library.minWidthForItem = nil
@@ -102,7 +104,7 @@ class IGImagePicker: UIViewController {
       config.maxCameraZoomFactor = 2.0
       config.gallery.hidesRemoveButton = false
       config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 5
-      
+
       let picker = YPImagePicker(configuration: config)
       picker.didFinishPicking { [unowned picker] items, cancelled in
           if cancelled {
@@ -110,7 +112,7 @@ class IGImagePicker: UIViewController {
             reject("", "Picker was canceled", nil)
             return
           }
-        
+
           var selections = [[String:Any]]()
         for item in items {
           switch item {
@@ -127,10 +129,12 @@ class IGImagePicker: UIViewController {
               break
           }
         }
-          
+
         picker.dismiss(animated: true, completion: nil)
         resolve(selections)
       }
+      let root = RCTPresentedViewController()
+      root?.present(picker, animated: true)
     })
   }
 
@@ -138,7 +142,7 @@ class IGImagePicker: UIViewController {
 
     DispatchQueue.main.async(execute: {
         var config = YPImagePickerConfiguration()
-  
+
             config.library.mediaType = .photoAndVideo
             config.shouldSaveNewPicturesToAlbum = false
             config.video.compression = AVAssetExportPresetMediumQuality
@@ -158,9 +162,9 @@ class IGImagePicker: UIViewController {
             config.library.defaultMultipleSelection =  options.value(forKeyPath: "library.defaultMultipleSelection") as? Bool ?? false
             config.gallery.hidesRemoveButton = false
             config.library.minNumberOfItems = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 1
-            
+
             let picker = YPImagePicker(configuration: config)
-            
+
             picker.didFinishPicking { [unowned picker] items, cancelled in
                 if cancelled {
                     print("Picker was canceled")
@@ -168,7 +172,7 @@ class IGImagePicker: UIViewController {
                   reject("", "Picker was canceled", nil)
                   return
                 }
-              
+
               var selections = [[String:Any]]()
                 for item in items {
                   switch item {
@@ -189,16 +193,16 @@ class IGImagePicker: UIViewController {
                 picker.dismiss(animated: true, completion: nil)
                 resolve(selections)
             }
-      
+
       let root = RCTPresentedViewController()
       root?.present(picker, animated: true)
     })
   }
-  
+
   func methodQueue() -> DispatchQueue {
          return DispatchQueue.main
   }
-  
+
   func persistFile(_ data: Data?) -> String? {
       // create temp file
     let tmpDirFullPath = getTmpDirectory()!
@@ -212,11 +216,11 @@ class IGImagePicker: UIViewController {
         print(error)
       return nil
     }
-    
+
     return filePath
   }
 
-  
+
   func getTmpDirectory() -> String? {
       let TMP_DIRECTORY = "ig-image-picker/"
       let tmpFullPath = NSTemporaryDirectory() + (TMP_DIRECTORY)
@@ -231,24 +235,24 @@ class IGImagePicker: UIViewController {
 
       return tmpFullPath
   }
-  
+
   func directoryExists (atPath path: String) -> Bool {
       var directoryExists = ObjCBool.init(false)
       let fileExists = FileManager.default.fileExists(atPath: path, isDirectory: &directoryExists)
 
       return fileExists && directoryExists.boolValue
   }
-  
+
   func resolutionSizeForLocalVideo(url:NSURL) -> CGSize? {
       guard let track = AVAsset(url: url as URL).tracks(withMediaType: AVMediaType.video).first else { return nil }
       let size = track.naturalSize.applying(track.preferredTransform)
     return CGSize(width: abs(size.width), height: abs(size.height))
   }
-  
+
   func videoFileSize (filePath: String) -> Int {
     let fileURL = URL(fileURLWithPath: filePath)
     var fileSizeObj: AnyObject?
-    
+
     do {
       try (fileURL as NSURL).getResourceValue(&fileSizeObj, forKey: .fileSizeKey)
     } catch {

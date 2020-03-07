@@ -17,7 +17,7 @@ const openPicker = async () => {
 }
 ```
 
-#### Picker options
+#### Picker IOS options
 ```javascript
 const defaultOption = {
   compressImageMaxWidth: 780,
@@ -37,5 +37,18 @@ const defaultOption = {
   showsVideoTrimmer: true,
   showsPhotoFilters: true,
   usesFrontCamera: false
+};
+```
+
+#### Picker Android options
+```javascript
+const defaultOption = {
+  showCamera: true,
+  videoSinglePick: false,
+  singlePickWithAutoComplete: false,
+  imageOnly: false,
+  videoOnly: false,
+  maxCount: 5,
+  columnCount: 4
 };
 ```

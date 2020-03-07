@@ -14,6 +14,7 @@ def DEFAULT_COMPILE_SDK_VERSION = 28
 def DEFAULT_BUILD_TOOLS_VERSION = '28.0.3'
 def DEFAULT_MIN_SDK_VERSION = 16
 def DEFAULT_TARGET_SDK_VERSION = 28
+def _glideVersion = safeExtGet("glideVersion", "4.10.0")
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -73,6 +74,8 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
+    implementation 'com.ypx.yimagepicker:androidx:3.1.1'
+    implementation("com.github.bumptech.glide:glide:${_glideVersion}")
 }
 
 def configureReactNativePom(def pom) {

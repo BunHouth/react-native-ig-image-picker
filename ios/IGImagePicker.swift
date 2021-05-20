@@ -76,7 +76,7 @@ class IGImagePicker: UIViewController {
     })
   }
 
-  @objc func libaryPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+  @objc func libraryPicker(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
     DispatchQueue.main.async(execute: {
         var config = YPImagePickerConfiguration()
         var startOnScreen = YPPickerScreen.library
@@ -98,7 +98,7 @@ class IGImagePicker: UIViewController {
         config.library.defaultMultipleSelection =  options.value(forKeyPath: "library.defaultMultipleSelection") as? Bool ?? false
         config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 1
         config.library.minNumberOfItems = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 1
-        config.library.numberOfItemsInRow = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 4
+        config.library.numberOfItemsInRow = options.value(forKeyPath: "library.numberOfItemsInRow") as? Int ?? 4
         config.library.spacingBetweenItems = 1.0
         config.library.skipSelectionsGallery = false
         config.library.preselectedItems = nil

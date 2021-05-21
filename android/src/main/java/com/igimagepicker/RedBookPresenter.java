@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.jp.bene.app.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
@@ -85,7 +84,7 @@ public class RedBookPresenter implements IPickerPresenter {
 
     @Override
     public DialogInterface showProgressDialog(@Nullable Activity activity, ProgressSceneEnum progressSceneEnum) {
-        return ProgressDialog.show(activity, null, String.valueOf(R.string.picker_loading));
+        return ProgressDialog.show(activity, null, null);
     }
 
     @Override

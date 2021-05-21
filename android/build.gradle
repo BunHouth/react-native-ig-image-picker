@@ -51,6 +51,10 @@ android {
         versionCode 1
         versionName "1.0"
     }
+     compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     lintOptions {
         abortOnError false
     }
@@ -85,7 +89,7 @@ def configureReactNativePom(def pom) {
         name packageJson.title
         artifactId packageJson.name
         version = packageJson.version
-        group = "com.reactlibrary"
+        group = "com.igimagepicker"
         description packageJson.description
         url packageJson.repository.baseUrl
 

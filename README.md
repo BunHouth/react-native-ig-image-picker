@@ -2,9 +2,14 @@
 
 ## Getting started
 
-`$ npm install react-native-ig-image-picker --save`
+`npm install react-native-ig-image-picker --save`
 
-### Mostly automatic installation
+or
+
+`yarn add react-native-ig-image-picker`
+
+
+### Library Linking RN < 60 only
 
 `$ react-native link react-native-ig-image-picker`
 

@@ -54,6 +54,9 @@ const defaultOption = {
 ```
 
 ## RoadMap
-[x] IOS like instagram
-[x] Android like instagram 
-[] Moving android libary to [InsGallery](https://github.com/JessYanCoding/InsGallery)
+
+- [x] IOS like instagram
+- [x] Android like instagram 
+- [ ] Moving android libary to [InsGallery](https://github.com/JessYanCoding/InsGallery)
+- [ ] Demo repository
+- [ ] Usage Documentation

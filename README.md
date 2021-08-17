@@ -52,3 +52,8 @@ const defaultOption = {
   columnCount: 4
 };
 ```
+
+## RoadMap
+[x] IOS like instagram
+[x] Android like instagram 
+[] Moving android libary to [InsGallery](https://github.com/JessYanCoding/InsGallery)

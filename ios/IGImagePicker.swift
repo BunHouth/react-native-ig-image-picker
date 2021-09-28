@@ -251,7 +251,7 @@ class IGImagePicker: UIViewController {
             config.gallery.hidesRemoveButton = false
             config.library.minNumberOfItems = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 1
 
-            let picker = YPVideoPicker(configuration: config)
+            let picker = YPImagePicker(configuration: config)
 
             picker.didFinishPicking { [unowned picker] items, cancelled in
                 if cancelled {

@@ -34,9 +34,13 @@ export const libraryPicker = (options = {}) => {
 export const videoPicker = (options = {}) => {
   return IGImagePicker.videoPicker({...defaultOption, ...options});
 };
+export const showMediaPickerNoCapture = (options = {}) => {
+  return IGImagePicker.showMediaPickerNoCapture({...defaultOption, ...options});
+};
 
 export default {
   showImagePicker,
   libraryPicker,
-  videoPicker
+  videoPicker,
+  showMediaPickerNoCapture,
 };

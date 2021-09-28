@@ -210,6 +210,83 @@ class IGImagePicker: UIViewController {
     })
   }
 
+  @objc func showMediaPickerNoCapture(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+    DispatchQueue.main.async(execute: {
+        var config = YPImagePickerConfiguration()
+            let cropWidth = options.value(forKeyPath: "cropWidth") as? Int ?? 0
+            let cropHeight = options.value(forKeyPath: "cropHeight") as? Int ?? 0
+            if(cropWidth != 0 && cropHeight != 0) {
+                let ratio = cropWidth/cropHeight
+                config.showsCrop = .rectangle(ratio: Double(ratio))
+            }
+
+            // let screens = [.library]
+            // let showCaptureImage = options.value(forKeyPath: "showCaptureImage") as? Bool ?? false
+            // let showCaptureVideo = options.value(forKeyPath: "showCaptureVideo") as? Bool ?? false
+            // if showCaptureImage {
+            //   screens.append(.photo)
+            // }
+            // if showCaptureImage {
+            //   screens.append(.video)
+            // }
+            config.library.mediaType = .photoAndVideo
+            config.shouldSaveNewPicturesToAlbum = false
+            config.video.compression = AVAssetExportPresetMediumQuality
+            config.startOnScreen = .library
+            // config.screens = screens
+            config.screens = [.library]
+            config.usesFrontCamera = options.value(forKeyPath: "usesFrontCamera") as? Bool ?? false
+            config.showsPhotoFilters = options.value(forKeyPath: "showsPhotoFilters") as? Bool ?? true
+            config.video.libraryTimeLimit =  options.value(forKeyPath: "video.libraryTimeLimit") as? TimeInterval ?? 500.0
+            config.showsCrop = .none
+            config.video.fileType = .mp4
+            config.maxCameraZoomFactor = 2.0
+            config.showsVideoTrimmer =  ((options.value(forKeyPath: "showsVideoTrimmer") as? DarwinBoolean) != nil)
+            config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 5
+            config.video.minimumTimeLimit = options.value(forKeyPath: "video.minimumTimeLimit") as? TimeInterval ?? 3.0
+            config.video.trimmerMaxDuration = options.value(forKeyPath: "video.trimmerMaxDuration") as? TimeInterval ?? 60.0
+            config.video.trimmerMinDuration = options.value(forKeyPath: "video.trimmerMinDuration") as? TimeInterval ?? 3.0
+            config.library.defaultMultipleSelection =  options.value(forKeyPath: "library.defaultMultipleSelection") as? Bool ?? false
+            config.gallery.hidesRemoveButton = false
+            config.library.minNumberOfItems = options.value(forKeyPath: "library.minNumberOfItems") as? Int ?? 1
+
+            let picker = YPVideoPicker(configuration: config)
+
+            picker.didFinishPicking { [unowned picker] items, cancelled in
+                if cancelled {
+                    print("Picker was canceled")
+                  picker.dismiss(animated: true, completion: nil)
+                  reject("", "Picker was canceled", nil)
+                  return
+                }
+
+              var selections = [[String:Any]]()
+                for item in items {
+                  switch item {
+                  case .photo(let photo):
+                    let imageResult = self.compression.compressImage(photo.image, withOptions: options as? [AnyHashable : Any])
+                    let filePath = self.persistFile(imageResult?.data)!
+                    let url = URL(fileURLWithPath: filePath)
+                    let fileName = url.lastPathComponent
+                    let photoDict = ["filename": fileName, "path": url.absoluteString, "mime": imageResult?.mime as Any, "height": imageResult?.height as Any, "width": imageResult?.width as Any, "size": imageResult?.data.count as Any] as [String : Any]
+                    selections.append(photoDict)
+
+                  case .video(let video):
+                    let dimension = self.resolutionSizeForLocalVideo(url: video.url as NSURL)
+                    let videoDict = ["path": video.url.absoluteString, "width": dimension?.width, "height": dimension?.height, "filename": video.asset?.value(forKey: "filename"), "mime": "video/mp4", "size": self.videoFileSize(filePath: video.url.path)]
+                    selections.append(videoDict as [String : Any])
+                  }
+              }
+                picker.dismiss(animated: true, completion: nil)
+                resolve(selections)
+            }
+
+      let root = RCTPresentedViewController()
+      root?.present(picker, animated: true)
+    })
+  }
+
   func methodQueue() -> DispatchQueue {
          return DispatchQueue.main
   }

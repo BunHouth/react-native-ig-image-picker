@@ -14,7 +14,7 @@ RCT_EXTERN_METHOD(videoPicker:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(showMediaPickerNoCapture:(NSDictionary *)options
+RCT_EXTERN_METHOD(libraryPickerExtended:(NSDictionary *)options
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject);
 

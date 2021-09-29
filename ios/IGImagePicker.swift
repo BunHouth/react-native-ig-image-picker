@@ -277,7 +277,7 @@ class IGImagePicker: UIViewController {
                   case .video(let video):
                     print(video)
                     let dimension = self.resolutionSizeForLocalVideo(url: video.url as NSURL)
-                    let videoDict = ["path": video.url.path, "width": dimension?.width, "height": dimension?.height, "filename": video.asset?.value(forKey: "filename"), "mime": "video/mp4", "size": self.videoFileSize(filePath: video.url.path), "duration": video.asset?.value(forKey: "duration"), "videFilePath":video.url.path]
+                    let videoDict = ["path": video.url.path, "width": dimension?.width, "height": dimension?.height, "filename": video.asset?.value(forKey: "filename"), "mime": "video/mp4", "size": self.videoFileSize(filePath: video.url.path), "duration": video.asset?.value(forKey: "duration")]
                   selections.append(videoDict as [String : Any])
                   }
               }

@@ -221,21 +221,21 @@ class IGImagePicker: UIViewController {
                 config.showsCrop = .rectangle(ratio: Double(ratio))
             }
 
-            let screens = [.library]
-            let showCaptureImage = options.value(forKeyPath: "showCaptureImage") as? Bool ?? false
-            let showCaptureVideo = options.value(forKeyPath: "showCaptureVideo") as? Bool ?? false
-            if showCaptureImage {
-              screens.append(.photo)
-            }
-            if showCaptureImage {
-              screens.append(.video)
-            }
+            // let screens = [.library]
+            // let showCaptureImage = options.value(forKeyPath: "showCaptureImage") as? Bool ?? false
+            // let showCaptureVideo = options.value(forKeyPath: "showCaptureVideo") as? Bool ?? false
+            // if showCaptureImage {
+            //   screens.append(.photo)
+            // }
+            // if showCaptureImage {
+            //   screens.append(.video)
+            // }
             config.library.mediaType = .photoAndVideo
             config.shouldSaveNewPicturesToAlbum = false
             config.video.compression = AVAssetExportPresetMediumQuality
             config.startOnScreen = .library
-            config.screens = screens
-            // config.screens = [.library]
+            // config.screens = screens
+            config.screens = [.library]
             config.usesFrontCamera = options.value(forKeyPath: "usesFrontCamera") as? Bool ?? false
             config.showsPhotoFilters = options.value(forKeyPath: "showsPhotoFilters") as? Bool ?? true
             config.video.libraryTimeLimit =  options.value(forKeyPath: "video.libraryTimeLimit") as? TimeInterval ?? 500.0

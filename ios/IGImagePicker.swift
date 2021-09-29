@@ -245,7 +245,7 @@ class IGImagePicker: UIViewController {
             config.video.fileType = .mp4
             config.maxCameraZoomFactor = 2.0
             config.showsVideoTrimmer =  ((options.value(forKeyPath: "showsVideoTrimmer") as? DarwinBoolean) != nil)
-            config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 5
+            config.library.maxNumberOfItems = options.value(forKeyPath: "library.maxNumberOfItems") as? Int ?? 99
             config.video.minimumTimeLimit = options.value(forKeyPath: "video.minimumTimeLimit") as? TimeInterval ?? 3.0
             config.video.trimmerMaxDuration = options.value(forKeyPath: "video.trimmerMaxDuration") as? TimeInterval ?? 60.0
             config.video.trimmerMinDuration = options.value(forKeyPath: "video.trimmerMinDuration") as? TimeInterval ?? 3.0

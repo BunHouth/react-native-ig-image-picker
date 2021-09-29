@@ -9,6 +9,7 @@
 import Foundation
 import YPImagePicker
 import AVKit
+import AVFoundation
 
 @objc(IGImagePicker)
 class IGImagePicker: UIViewController {
@@ -210,6 +211,7 @@ class IGImagePicker: UIViewController {
     })
   }
 
+  // based on showImagePicker
   @objc func libraryPickerExtended(_ options: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
 
     DispatchQueue.main.async(execute: {
@@ -269,13 +271,14 @@ class IGImagePicker: UIViewController {
                     let filePath = self.persistFile(imageResult?.data)!
                     let url = URL(fileURLWithPath: filePath)
                     let fileName = url.lastPathComponent
-                    let photoDict = ["filename": fileName, "path": url.absoluteString, "mime": imageResult?.mime as Any, "height": imageResult?.height as Any, "width": imageResult?.width as Any, "size": imageResult?.data.count as Any] as [String : Any]
+                    let photoDict = ["filename": fileName, "path": url.path, "mime": imageResult?.mime as Any, "height": imageResult?.height as Any, "width": imageResult?.width as Any, "size": imageResult?.data.count as Any] as [String : Any]
                     selections.append(photoDict)
 
                   case .video(let video):
+                    print(video)
                     let dimension = self.resolutionSizeForLocalVideo(url: video.url as NSURL)
-                    let videoDict = ["path": video.url.absoluteString, "width": dimension?.width, "height": dimension?.height, "filename": video.asset?.value(forKey: "filename"), "mime": "video/mp4", "size": self.videoFileSize(filePath: video.url.path)]
-                    selections.append(videoDict as [String : Any])
+                    let videoDict = ["path": video.url.path, "width": dimension?.width, "height": dimension?.height, "filename": video.asset?.value(forKey: "filename"), "mime": "video/mp4", "size": self.videoFileSize(filePath: video.url.path), "duration": video.asset?.value(forKey: "duration"), "videFilePath":video.url.path]
+                  selections.append(videoDict as [String : Any])
                   }
               }
                 picker.dismiss(animated: true, completion: nil)
